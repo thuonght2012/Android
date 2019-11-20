@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>Student</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+</head>
+
+<body>
+
+    <div class="container">
+        <h2>Student Management</h2>
+        <!-- Button to Open the Modal -->
+        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#myModal">
+            ADD
+        </button>
+        <button type="button" class="btn btn-primary"  onclick="sort()">
+            Sort
+        </button>
+    </br>
+
+        <!-- The Modal -->
+        <div class="modal" id="myModal">
+            <div class="modal-dialog">
+                <div class="modal-content">
+
+                    <div class="modal-header">
+                        <h4 class="modal-title">Add Student</h4>
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    </div>
+                    <div class="modal-body">
+                        <input type="text" placeholder="Name Student" class="form-control" id="nameStudent">
+                        <p id="nameError"></p>
+                    </div>
+                    <div class="modal-body">
+                        <input type="number" placeholder="JS Score" class="form-control" id="jsScore">
+                        <p id="jsError"></p>
+                    </div>
+                    <div class="modal-body">
+                        <input type="number" placeholder="Android Score" class="form-control" id="androidScore">
+                        <p id="androidError"></p>
+                    </div>
+                    <div class="modal-body">
+                        <input type="text" placeholder="Class" class="form-control" id="classStudent">
+                        <p id="classError"></p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-danger" onclick="add()" data-dismiss="modal">Add</button>
+                        <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        <div class="modal" id="myModal1">
+            <div class="modal-dialog">
+                <div class="modal-content">
+
+                    <div class="modal-header">
+                        <h4 class="modal-title">Update Student</h4>
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    </div>
+                    <div class="modal-body">
+                        <input type="text" placeholder="Name Student" class="form-control" id="nameStudent1">
+                    </div>
+                    <div class="modal-body">
+                        <input type="number" placeholder="JS Score" class="form-control" id="jsScore1">
+                    </div>
+                    <div class="modal-body">
+                        <input type="number" placeholder="Android Score" class="form-control" id="androidScore1">
+                    </div>
+                    <div class="modal-body">
+                        <input type="text" placeholder="Class" class="form-control" id="classStudent1">
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-danger" onclick="update(choose)" data-dismiss="modal">Update</button>
+                        <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        <div></div>
+        <table class="table" id="table">
+        </table>
+
+    </div>
+
+</body>
+
+</html>
+<script text="text/javascript">
+var choose = 0;
+    const students = [
+        {
+            name: "phuong",
+            jsScore: 8,
+            androidScore: 7,
+            classStudent: "PNV20B"
+        },
+        {
+            name: "nam",
+            jsScore: 8,
+            androidScore: 9,
+            classStudent: "PNV20A"
+        }
+    ]
+    localStorage.setItem('student', JSON.stringify(students));
+    var studentLocal = JSON.parse(localStorage.getItem('student'))
+    display();
+    function display() {
+        var col = [];
+
+        for (var i = 0; i < studentLocal.length; i++) {
+            for (var key in studentLocal[i]) {
+                if (col.indexOf(key) === -1) {
+                    col.push(key);
+                }
+            }
+        }
+        var table = document.createElement("table");
+        var tr = table.insertRow(-1);
+
+        for (var i = 0; i < col.length; i++) {
+            var th = document.createElement("th");
+            th.innerHTML = col[i];
+            tr.appendChild(th);
+        }
+
+
+        var th = document.createElement("th");
+        th.innerHTML = "Average";
+        tr.appendChild(th);
+        var th = document.createElement("th");
+        th.innerHTML = "Rating";
+        tr.appendChild(th);
+        var thAction = document.createElement("th");
+        thAction.innerHTML = "Action";
+        tr.appendChild(thAction);
+
+        for (let i = 0; i < studentLocal.length; i++) {
+            var average = (parseFloat(studentLocal[i].jsScore) + parseFloat(studentLocal[i].androidScore)) / 2;
+            tr = table.insertRow(-1);
+            for (let j = 0; j < col.length; j++) {
+                var tabCell = tr.insertCell(-1);
+                tabCell.innerHTML = studentLocal[i][col[j]];
+            }
+            var rating=0;
+
+
+            var tdAvarage = document.createElement("td");
+            let buttonAverage = document.createElement('p');
+            buttonAverage.innerText = average;
+            tdAvarage.appendChild(buttonAverage);
+            tr.appendChild(tdAvarage)
+            // checkError(studentLocal[i].name,studentLocal[i].jsScore,studentLocal[i].androidScore,studentLocal[i].classStudent)
+
+            if (average >= 8) {
+                rating = "Very good" 
+            } if (average >= 7 && average<=7.9)  {
+                rating = "Good"
+            } if (average < 7) {
+                rating = "Normal"
+            }
+            var tdRating = document.createElement("td");
+            let buttonRating = document.createElement('p');
+            buttonRating.innerText = rating;
+            tdRating.appendChild(buttonRating);
+            tr.appendChild(tdRating)
+
+
+            var td = document.createElement("td");
+            let button = document.createElement('button');
+            button.innerHTML = "delete";
+            button.setAttribute('onclick', "delete1('" + i + "');");
+            tr.appendChild(button);
+            button.className = "btn btn-primary";
+
+
+            let buttonUpdate = document.createElement('button');
+            buttonUpdate.innerHTML = "update";
+            buttonUpdate.setAttribute('onclick', "displayUpdate('" + i + "');");
+            buttonUpdate.setAttribute('data-toggle', "modal");
+            buttonUpdate.setAttribute('data-target', "#myModal1");
+            tr.appendChild(buttonUpdate);
+            buttonUpdate.className = "btn btn-secondary";
+            choose = i
+
+        }
+
+
+        var divContainer = document.getElementById("table");
+        divContainer.innerHTML = "";
+        divContainer.appendChild(table);
+
+    }
+    function calcultor(jsScore, androidScore) {
+        var result = (jsScore + androidScore) / 2
+        document.getElementById('average').value = result;
+        localStorage.setItem('student', JSON.stringify(students))
+    }
+    function add() {
+        var name = document.getElementById("nameStudent").value;
+        var jsScore = document.getElementById("jsScore").value;
+        var androidScore = document.getElementById("androidScore").value;
+        var classStudent = document.getElementById("classStudent").value;
+        let newStudent = { name: name, jsScore: jsScore, androidScore: androidScore, classStudent: classStudent }
+       
+        studentLocal.push(newStudent);
+        localStorage.setItem('student', JSON.stringify(students))
+        display();
+    }
+    function delete1(id) {
+        confirm("Do you want to delete?"); 
+        studentLocal.splice(id, 1)
+        localStorage.setItem('student', JSON.stringify(students))
+        display();
+    }
+    function displayUpdate(id) {
+        document.getElementById("nameStudent1").value= studentLocal[id].name;
+        document.getElementById("jsScore1").value= studentLocal[id].jsScore;
+        document.getElementById("androidScore1").value= studentLocal[id].androidScore;
+        document.getElementById("classStudent1").value= studentLocal[id].classStudent;
+        
+       
+
+
+    }
+    function update(id){
+        var name = document.getElementById("nameStudent1").value;
+        var jsScore = document.getElementById("jsScore1").value;
+        var androidScore = document.getElementById("androidScore1").value;
+        var classStudent = document.getElementById("classStudent1").value;
+        studentLocal[id].name =  name ;
+        studentLocal[id].jsScore= jsScore
+        studentLocal[id].androidScore = androidScore 
+        studentLocal[id].classStudent =classStudent 
+        localStorage.setItem('student', JSON.stringify(students))
+        display()
+    }
+    // function checkError(name,jsScore,androidScore,classStudent) {
+    //     if (!name) {
+    //         document.getElementById("nameError").innerHTML="Name is empty!!";
+    //     }
+    //     if (!jsScore) {
+    //        document.getElementById("jsError").innerHTML="jsScore is empty!!";
+    //     }
+    //     if (!androidScore) {
+    //         document.getElementById("androidError").innerHTML="androidScore is empty!!";
+    //     }
+    //     if (classStudent) {
+    //         document.getElementById("classError").innerHTML="class is empty!!";
+    //     }
+    // };
+
+function sort(){
+    students.sort(function(a, b) {
+            if (a.name.toLowerCase() < b.name.toLowerCase()) {
+                return -1;
+                console.log('a.name.toLowerCase()')
+            }
+            if (a.name.toLowerCase() > b.name.toLowerCase()) {
+                return 1;
+            }
+            return 0;
+        });
+        localStorage.setItem('student', JSON.stringify(students))
+        display();
+}
+</script>
